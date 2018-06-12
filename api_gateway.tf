@@ -39,3 +39,6 @@ resource "aws_api_gateway_deployment" "lambda_api" {
   rest_api_id = "${aws_api_gateway_rest_api.lambda_api.id}"
   stage_name  = "test"
 }
+output "base_url" {
+  value = "${aws_api_gateway_deployment.lambda_api.invoke_url}"
+}

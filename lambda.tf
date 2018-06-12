@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_lambda_function" "lambda-test" {
-  function_name = "Srvrless-test"
+  function_name = "Lamb-test"
 
   # The bucket name as created earlier with "aws s3api create-bucket"
   s3_bucket = "tform-build"
@@ -38,6 +38,8 @@ resource "aws_iam_role" "lambda_exec" {
   ]
 }
 
+EOF
+}
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = "${aws_api_gateway_rest_api.lambda_api.id}"
   parent_id   = "${aws_api_gateway_rest_api.lambda_api.root_resource_id}"
@@ -50,7 +52,13 @@ resource "aws_api_gateway_method" "proxy" {
   http_method   = "ANY"
   authorization = "NONE"
 }
+resource "aws_lambda_permission" "apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.lambda-test.arn}"
+  principal     = "apigateway.amazonaws.com"
 
-
-EOF
+  # The /*/* portion grants access from any method on any resource
+  # within the API Gateway "REST API".
+  source_arn = "${aws_api_gateway_deployment.lambda_api.execution_arn}/*/*"
 }
