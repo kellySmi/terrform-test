@@ -1,9 +1,10 @@
 # Terraform examples
-Example files for Terraform for AWS.
-## Configuration
+Exploring Terraform for AWS.
+
+## File Explanation
 
 The lambda.tf file contains the configuration to create the lambda.
-this just returns a string.
+This returns a string.
 
 The lambda-test directory contains the actual lambda JS code, this file is zipped and stored in an S3 bucket.
 
