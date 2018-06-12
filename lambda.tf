@@ -2,7 +2,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_lambda_function" "example" {
+resource "aws_lambda_function" "lambda-test" {
   function_name = "Srvrless-test"
 
   # The bucket name as created earlier with "aws s3api create-bucket"
@@ -37,5 +37,20 @@ resource "aws_iam_role" "lambda_exec" {
     }
   ]
 }
+
+resource "aws_api_gateway_resource" "proxy" {
+  rest_api_id = "${aws_api_gateway_rest_api.lambda_api.id}"
+  parent_id   = "${aws_api_gateway_rest_api.lambda_api.root_resource_id}"
+  path_part   = "{proxy+}"
+}
+
+resource "aws_api_gateway_method" "proxy" {
+  rest_api_id   = "${aws_api_gateway_rest_api.lambda_api.id}"
+  resource_id   = "${aws_api_gateway_resource.proxy.id}"
+  http_method   = "ANY"
+  authorization = "NONE"
+}
+
+
 EOF
 }
